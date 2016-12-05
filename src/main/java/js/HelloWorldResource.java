@@ -18,6 +18,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import assign.services.EavesdropService;
+
 @Path("/path")
 public class HelloWorldResource {
 	
