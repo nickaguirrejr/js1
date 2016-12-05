@@ -5,7 +5,7 @@
 function myFunction() {
 	var content;
 	var url = new XMLHttpRequest();
-	url.open("GET", "/js-example/app/path/solum", false);
+	url.open("GET", "/app/path/solum", false);
 	url.send();
 	content = url.response;
 	document.getElementById("tablespace").border = 1;
