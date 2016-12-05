@@ -21,20 +21,20 @@ import org.jsoup.select.Elements;
 @Path("/path")
 public class HelloWorldResource {
 	
-
+	EavesdropService eavesdropservice;
 	
 	public HelloWorldResource() {
-
+		this.eavesdropservice = new EavesdropService();
 	}
 	
 	@GET
 	@Path("/solum")
 	@Produces("text/html")
 	public String getAllProjects() throws Exception {
-		ArrayList<String> parsed = getYears();
+		ArrayList<String> parsed = this.eavesdropservice.getYears();
 //		Set<String> keys = parsed.keySet();
 		
-		HashMap<String, Integer> meetings = getMeetings(parsed);
+		HashMap<String, Integer> meetings = this.eavesdropservice.getMeetings(parsed);
 		Set<String> keys = meetings.keySet();
 		String str = "";
 		for(String item : keys){
@@ -42,54 +42,5 @@ public class HelloWorldResource {
 		}
 		
 		return str;
-	}
-
-	public ArrayList<String> getYears() throws IOException{
-		ArrayList<String> res = new ArrayList<String>();
-		Document doc = Jsoup.connect("http://eavesdrop.openstack.org/meetings/solum_team_meeting/").get();
-		Elements links = doc.select("body a");
-	    if (links != null) {
-		    ListIterator<Element> iter = links.listIterator();		    	
-		    while(iter.hasNext()) {
-	    		Element e = (Element) iter.next();
-	    		String s = e.html();
-	    		if ( s != null && s.matches("^\\d{4}/")) {
-	    			res.add(s);
-	    		}
-		    }
-	    }
-		return res;
-	}
-	
-	public HashMap<String, Integer> getMeetings(ArrayList <String> years) throws IOException{
-		HashMap<String, Integer> res = new HashMap<String, Integer>();
-		for(String item : years){
-			HashMap<String, Integer> num = new HashMap<String, Integer>();
-			Integer count = 0;
-			Document doc = Jsoup.connect("http://eavesdrop.openstack.org/meetings/solum_team_meeting/" + item).get();
-			Elements links = doc.select("body a");
-		    if (links != null) {
-			    ListIterator<Element> iter = links.listIterator();		    	
-			    while(iter.hasNext()) {
-		    		Element e = (Element) iter.next();
-		    		String s = e.html();
-		    		if ( s != null && s.contains("solum_team_meeting")) {
-//		    			System.out.println(s);
-		    			String split[] = s.split("\\.");
-		    			String secsplit[] = split[1].split("-");
-		    			String r = split[0] + secsplit[0] + secsplit[1] + secsplit[2];
-		    			num.put(r, res.get(s));
-		    		}
-			    }
-		    }
-		    if(item.equals("2014/")){
-		    	Set<String> keys = num.keySet();
-		    	for(String yo : keys){
-//		    		System.out.println(yo);
-		    	}
-		    }
-		    res.put(item, num.size());
-		}
-		return res;
 	}
 }
